@@ -28,34 +28,17 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
+    enum: ['pending', 'success', 'cancelled'],
     default: 'pending'
-  },
-  prescriptionRequired: {
-    type: Boolean,
-    default: false
   },
   prescription: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Prescription'
   },
-  shippingAddress: {
-    street: String,
-    city: String,
-    postalCode: String,
-    country: String
-  },
-  paymentStatus: {
-    type: String,
-    enum: ['pending', 'paid', 'failed'],
-    default: 'pending'
-  },
-  paymentMethod: String,
   orderDate: {
     type: Date,
     default: Date.now
-  },
-  deliveryDate: Date
+  }
 }, {
   timestamps: true
 });

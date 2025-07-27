@@ -11,10 +11,6 @@ const inventorySchema = new mongoose.Schema({
     required: true,
     min: 0
   },
-  batchNumber: {
-    type: String,
-    required: true
-  },
   expiryDate: {
     type: Date,
     required: true
@@ -27,10 +23,6 @@ const inventorySchema = new mongoose.Schema({
   maximumStock: {
     type: Number,
     default: 100
-  },
-  lastRestocked: {
-    type: Date,
-    default: Date.now
   },
   supplier: String
 }, {

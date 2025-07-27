@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
     ref: 'Prescription'
   }],
   allergies: [String],
-  licenseNumber: String, // Pour docteurs/pharmaciens
 }, {
   timestamps: true
 });

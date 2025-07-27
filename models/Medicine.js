@@ -5,7 +5,6 @@ const medicineSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  genericName: String,
   description: String,
   category: {
     type: mongoose.Schema.Types.ObjectId,
@@ -20,18 +19,12 @@ const medicineSchema = new mongoose.Schema({
     required: true
   },
   dosageForm: String,
-  strength: String,
-  manufacturer: String,
   sideEffects: [String],
-  contraindications: [String],
-  interactions: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'DrugInteraction'
-  }],
   image: String,
-  inStock: {
-    type: Boolean,
-    default: true
+  stock: {
+    type: Number,
+    required: true,
+    default: 0
   }
 }, {
   timestamps: true

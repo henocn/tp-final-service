@@ -7,14 +7,6 @@ const categorySchema = new mongoose.Schema({
     unique: true
   },
   description: String,
-  requiresPrescription: {
-    type: Boolean,
-    default: false
-  },
-  parent: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category'
-  }
 }, {
   timestamps: true
 });
