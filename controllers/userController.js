@@ -71,6 +71,8 @@ exports.getProfile = async (req, res) => {
   }
 };
 
+
+
 exports.refreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -78,16 +80,13 @@ exports.refreshToken = async (req, res) => {
       return res.status(401).json({ error: 'Refresh token required' });
     }
 
-    // Vérifier le refresh token
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     
-    // Trouver l'utilisateur
     const user = await User.findById(decoded.id);
     if (!user || user.refreshToken !== refreshToken) {
       return res.status(401).json({ error: 'Invalid refresh token' });
     }
 
-    // Créer un nouveau access token
     const accessToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_ACCESS_SECRET,

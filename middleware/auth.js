@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     
     const user = await User.findById(decoded.id);
     if (!user) {
