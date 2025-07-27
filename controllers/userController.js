@@ -31,12 +31,30 @@ exports.login = async (req, res) => {
     if (!user || !await bcrypt.compare(password, user.password)) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign(
+
+    const accessToken = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: '15m' }
     );
-    res.json({ token, user: { id: user._id, email, role: user.role } });
+
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    // Envoyer les tokens
+    res.json({
+        id: user._id, 
+        email: user.email, 
+        role: user.role,
+        refreshToken: user.refreshToken,
+        accessToken: accessToken
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -50,5 +68,37 @@ exports.getProfile = async (req, res) => {
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+exports.refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(401).json({ error: 'Refresh token required' });
+    }
+
+    // Vérifier le refresh token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    
+    // Trouver l'utilisateur
+    const user = await User.findById(decoded.id);
+    if (!user || user.refreshToken !== refreshToken) {
+      return res.status(401).json({ error: 'Invalid refresh token' });
+    }
+
+    // Créer un nouveau access token
+    const accessToken = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    res.json({
+      accessToken,
+      expiresIn: 900
+    });
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid refresh token' });
   }
 };

@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
     enum: ['client', 'pharmacist', 'doctor', 'admin'],
     default: 'client'
   },
+  refreshToken: String,
   firstName: {
     type: String,
     required: true
@@ -35,7 +36,7 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Prescription'
   }],
-  allergies: [String],
+  allergies: [String]
 }, {
   timestamps: true
 });
