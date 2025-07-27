@@ -1,5 +1,7 @@
 const Inventory = require('../models/Inventory');
 
+
+
 exports.getAll = async (req, res) => {
   try {
     const inventory = await Inventory.find().populate('medicine');
@@ -8,6 +10,8 @@ exports.getAll = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
 
 exports.updateStock = async (req, res) => {
   try {
@@ -23,6 +27,8 @@ exports.updateStock = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+
 
 exports.checkStock = async (req, res) => {
   try {

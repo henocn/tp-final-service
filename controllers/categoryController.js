@@ -1,5 +1,7 @@
 const Category = require('../models/Category');
 
+
+
 exports.getAll = async (req, res) => {
   try {
     const categories = await Category.find();
@@ -9,6 +11,8 @@ exports.getAll = async (req, res) => {
   }
 };
 
+
+
 exports.create = async (req, res) => {
   try {
     const category = await Category.create(req.body);
@@ -17,6 +21,8 @@ exports.create = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+
 
 exports.update = async (req, res) => {
   try {
@@ -31,6 +37,8 @@ exports.update = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+
 
 exports.delete = async (req, res) => {
   try {
