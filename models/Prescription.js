@@ -22,7 +22,22 @@ const prescriptionSchema = new mongoose.Schema({
     duration: String,
     quantity: Number
   }],
-  notes: String
+  status: {
+    type: String,
+    enum: ['active', 'expired', 'used'],
+    default: 'active'
+  },
+  notes: String,
+  verificationStatus: {
+    type: String,
+    enum: ['pending', 'verified', 'rejected'],
+    default: 'pending'
+  },
+  verifiedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  image: String
 }, {
   timestamps: true
 });
