@@ -2,7 +2,6 @@ const Medicine = require('../models/Medicine');
 
 
 
-// Get all medicines
 exports.getAll = async (req, res) => {
   try {
     const medicines = await Medicine.find().populate('category');
@@ -14,7 +13,6 @@ exports.getAll = async (req, res) => {
 
 
 
-// Get one medicine
 exports.getOne = async (req, res) => {
   try {
     const medicine = await Medicine.findById(req.params.id).populate('category');
@@ -27,7 +25,6 @@ exports.getOne = async (req, res) => {
 
 
 
-// Create medicine
 exports.create = async (req, res) => {
   try {
     const medicine = await Medicine.create(req.body);
@@ -39,8 +36,6 @@ exports.create = async (req, res) => {
 
 
 
-
-// Update medicine
 exports.update = async (req, res) => {
   try {
     const medicine = await Medicine.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -53,7 +48,6 @@ exports.update = async (req, res) => {
 
 
 
-// Delete medicine
 exports.delete = async (req, res) => {
   try {
     const medicine = await Medicine.findByIdAndDelete(req.params.id);
