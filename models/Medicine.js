@@ -6,10 +6,6 @@ const medicineSchema = new mongoose.Schema({
     required: true
   },
   description: String,
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category'
-  },
   requiresPrescription: {
     type: Boolean,
     default: false
@@ -20,7 +16,6 @@ const medicineSchema = new mongoose.Schema({
   },
   dosageForm: String,
   sideEffects: [String],
-  image: String,
   stock: {
     type: Number,
     required: true,

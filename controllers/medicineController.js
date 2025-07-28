@@ -35,6 +35,16 @@ exports.create = async (req, res) => {
 };
 
 
+exports.bulkCreate = async (req, res) => {
+  try {
+    const medicines = await Medicine.insertMany(req.body);
+    res.status(201).json(medicines);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
 
 exports.update = async (req, res) => {
   try {
