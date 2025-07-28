@@ -24,7 +24,7 @@ const prescriptionSchema = new mongoose.Schema({
   }],
   status: {
     type: String,
-    enum: ['active', 'expired', 'used'],
+    enum: ['active', 'used'],
     default: 'active'
   },
   notes: String

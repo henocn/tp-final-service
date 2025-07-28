@@ -49,24 +49,6 @@ exports.create = async (req, res) => {
 
 
 
-exports.verify = async (req, res) => {
-  try {
-    const prescription = await Prescription.findByIdAndUpdate(
-      req.params.id,
-      { 
-        verificationStatus: 'verified',
-        verifiedBy: req.user.id
-      },
-      { new: true }
-    );
-    if (!prescription) return res.status(404).json({ error: 'Prescription not found' });
-    res.json(prescription);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-};
-
-
 exports.delete = async (req, res) => {
   try {
     const prescription = await Prescription.findByIdAndDelete(req.params.id);
