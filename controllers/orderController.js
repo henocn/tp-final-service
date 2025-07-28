@@ -138,6 +138,25 @@ exports.create = async (req, res) => {
 
 
 
+exports.payOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+
+    if (order.status !== 'pending') {
+      return res.status(400).json({ error: 'Order cannot be paid' });
+    }
+
+    order.status = 'success';
+    await order.save();
+
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 
 exports.update = async (req, res) => {
   try {
@@ -147,4 +166,16 @@ exports.update = async (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
+
+
+
+exports.delete = async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json({ message: 'Order deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 };
