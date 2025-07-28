@@ -150,7 +150,7 @@ exports.updateProfile = async (req, res) => {
       userId,
       { firstName, lastName, email, address, role },
       { new: true, runValidators: true }
-    );
+    ).select('-password -refreshToken');
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
   } catch (err) {
