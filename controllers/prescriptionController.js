@@ -56,3 +56,14 @@ exports.verify = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+
+exports.delete = async (req, res) => {
+  try {
+    const prescription = await Prescription.findByIdAndDelete(req.params.id);
+    if (!prescription) return res.status(404).json({ error: 'Prescription not found' });
+    res.json({ message: 'Prescription deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
