@@ -72,17 +72,6 @@ exports.login = async (req, res) => {
 
 
 
-exports.getProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-
-
 exports.refreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -131,6 +120,17 @@ exports.getUserById = async (req, res) => {
     const user = await User.findById(req.params.id).select('-password -refreshToken');
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
