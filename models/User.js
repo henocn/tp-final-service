@@ -26,12 +26,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   phoneNumber: String,
-  address: {
-    street: String,
-    city: String,
-    postalCode: String,
-    country: String
-  },
+  address: String,
   medicalHistory: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Prescription'

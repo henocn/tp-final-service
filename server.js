@@ -1,20 +1,21 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 const connectDB = require('./config/database');
+const routes = require('./routes');
 
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Routes
+app.use('', routes);
+
 // Connect to database
 connectDB();
-
-// Routes
-app.get('/', (req, res) => {
-    res.send('Welcome to the API');
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -15,7 +15,14 @@ exports.register = async (req, res) => {
     });
     res.status(201).json({ 
       message: 'User created',
-      user: { id: user._id, email: user.email, role: user.role }
+      user: {
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        address: user.address
+    }
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -49,11 +56,14 @@ exports.login = async (req, res) => {
 
     // Envoyer les tokens
     res.json({
-        id: user._id, 
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email, 
         role: user.role,
-        refreshToken: user.refreshToken,
-        accessToken: accessToken
+        address: user.address,
+        accessToken: accessToken,
+        refreshToken: user.refreshToken
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -99,5 +109,29 @@ exports.refreshToken = async (req, res) => {
     });
   } catch (err) {
     res.status(401).json({ error: 'Invalid refresh token' });
+  }
+};
+
+
+
+// Get all users in database
+exports.getAllUsers = async(req, res) => {
+  try {
+    const users = await User.find().select('-password -refreshToken -medicalHistory -allergies');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+// Get a user details
+exports.getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password -refreshToken');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
