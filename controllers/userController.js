@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Order = require('../models/Order');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -42,13 +43,13 @@ exports.login = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_ACCESS_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: process.env.JWT_ACCESS_EXPIRATION || '5d' }
     );
 
     const refreshToken = jwt.sign(
       { id: user._id },
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: process.env.JWT_REFRESH_EXPIRATION || '30d' }
     );
 
     user.refreshToken = refreshToken;
@@ -125,12 +126,69 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+
+// Delete a user
 exports.deleteUser = async (req, res) => {
   const userId = req.params.id;
   try {
     const user = await User.findByIdAndDelete(userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+// patch for update profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { firstName, lastName, email, address, role } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { firstName, lastName, email, address, role },
+      { new: true, runValidators: true }
+    );
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+// change password
+exports.changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+      return res.status(401).json({ error: 'Current password is incorrect' });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+// get user orders
+exports.getUserOrders = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const orders = await Order.find({ user: userId })
+      .populate('items.medicine');
+    res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
