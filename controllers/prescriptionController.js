@@ -15,9 +15,18 @@ exports.getAll = async (req, res) => {
 exports.getOne = async (req, res) => {
   try {
     const prescription = await Prescription.findById(req.params.id)
-      .populate('patient')
-      .populate('doctor')
-      .populate('medicines.medicine');
+      .populate({
+        path: 'patient',
+        select: 'email firstName lastName'
+      })
+      .populate({
+        path: 'doctor',
+        select: 'email firstName lastName'
+      })
+      .populate({
+        path: 'medicines.medicine',
+        select: 'name price stock'
+      });
     if (!prescription) return res.status(404).json({ error: 'Prescription not found' });
     res.json(prescription);
   } catch (err) {
