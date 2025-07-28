@@ -16,16 +16,8 @@ const orderSchema = new mongoose.Schema({
       type: Number,
       required: true,
       min: 1
-    },
-    price: {
-      type: Number,
-      required: true
     }
   }],
-  totalAmount: {
-    type: Number,
-    required: true
-  },
   status: {
     type: String,
     enum: ['pending', 'success', 'cancelled'],

@@ -49,15 +49,3 @@ exports.update = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
-
-
-
-exports.getUserOrders = async (req, res) => {
-  try {
-    const orders = await Order.find({ user: req.params.userId })
-      .populate('items.medicine');
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
