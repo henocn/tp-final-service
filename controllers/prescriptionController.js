@@ -5,9 +5,6 @@ const Prescription = require('../models/Prescription');
 exports.getAll = async (req, res) => {
   try {
     const prescriptions = await Prescription.find()
-      .populate('patient')
-      .populate('doctor')
-      .populate('medicines.medicine');
     res.json(prescriptions);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -27,7 +24,6 @@ exports.getOne = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 
 exports.create = async (req, res) => {

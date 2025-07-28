@@ -144,7 +144,7 @@ exports.deleteUser = async (req, res) => {
 // patch for update profile
 exports.updateProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.params.id;
     const { firstName, lastName, email, address, role } = req.body;
 
     const user = await User.findByIdAndUpdate(
