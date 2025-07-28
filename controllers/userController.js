@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Order = require('../models/Order');
+const Prescription = require('../models/Prescription');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -189,6 +190,19 @@ exports.getUserOrders = async (req, res) => {
     const orders = await Order.find({ user: userId })
       .populate('items.medicine');
     res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+exports.getUserPrescriptions = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const prescriptions = await Prescription.find({ patient: userId })
+      .populate('doctor')
+      .populate('medicines.medicine');
+    res.json(prescriptions);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

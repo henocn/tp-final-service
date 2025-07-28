@@ -15,6 +15,20 @@ exports.getAll = async (req, res) => {
 };
 
 
+exports.getOne = async (req, res) => {
+  try {
+    const prescription = await Prescription.findById(req.params.id)
+      .populate('patient')
+      .populate('doctor')
+      .populate('medicines.medicine');
+    if (!prescription) return res.status(404).json({ error: 'Prescription not found' });
+    res.json(prescription);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 
 exports.create = async (req, res) => {
   try {
