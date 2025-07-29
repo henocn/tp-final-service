@@ -4,7 +4,10 @@ const Medicine = require('../models/Medicine');
 
 exports.getAll = async (req, res) => {
   try {
-    const medicines = await Medicine.find();
+    const { page = 1, limit = 5 } = req.query;
+    const medicines = await Medicine.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
     res.json(medicines);
   } catch (err) {
     res.status(500).json({ error: err.message });
