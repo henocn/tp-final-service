@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const User = require('../models/User')
+const Prescription = require('../models/Prescription');
 
 
 /**
@@ -76,25 +77,40 @@ exports.getTotalSalesByProduct = async (req, res) => {
 // implementation de la fonction 3
 exports.patientsWithPrescriptions = async (req, res) => {
   try {
-    const patients = await User.find({ role: 'patient' }).populate({
-      path: 'prescriptions',
-      model: 'Prescription',
-      populate: {
-        path: 'items.medicine',
-        model: 'Medicine'
+    const results = await Prescription.aggregate([
+      {
+        $group: {
+          _id: '$patient',
+          prescriptionsCount: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: '70815285_users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'patient'
+        }
+      },
+      {
+        $unwind: '$patient'
+      },
+      {
+        $project: {
+          _id: '$patient._id',
+          name: { $concat: ['$patient.firstName', ' ', '$patient.lastName'] },
+          email: '$patient.email',
+          prescriptionsCount: 1
+        }
       }
-    });
+    ]);
 
-    const patientsWithCounts = patients.map(patient => ({
-      name: patient.name,
-      prescriptionsCount: patient.prescriptions.length
-    }));
-
-    res.json(patientsWithCounts);
+    res.json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 
