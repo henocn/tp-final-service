@@ -6,7 +6,7 @@ const checkRole = require('../middleware/checkRole');
 router.get('/', auth, getAll);
 router.post('/', auth, create);
 router.get('/:id', auth, getOne);
-router.post('/:id/payement', auth, checkRole("pharmacist"), acceptOrCancelOrder);
+router.post('/payement/:id', auth, checkRole("pharmacist"), acceptOrCancelOrder);
 router.delete('/:id', auth, deleteOrder);
 
 module.exports = router;
