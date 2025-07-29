@@ -108,8 +108,21 @@ exports.refreshToken = async (req, res) => {
 // Get all users in database
 exports.getAllUsers = async(req, res) => {
   try {
-    const { page = 1, limit = 5 } = req.query;
-    const users = await User.find()
+    const { page = 1, limit = 5, search = '', sort = 'asc', role = '' } = req.query;
+
+    const filter = {};
+    if (search) {
+      filter.$or = [
+        { email: { $regex: search, $options: 'i' } },
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } }
+      ];
+    }
+    if (role) {
+      filter.role = role;
+    }
+
+    const users = await User.find(filter)
       .select('-password -refreshToken -medicalHistory -allergies')
       .skip((page - 1) * limit)
       .limit(limit);

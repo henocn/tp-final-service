@@ -3,13 +3,26 @@ const Prescription = require('../models/Prescription');
 
 exports.getAll = async (req, res) => {
   try {
-    const { page = 1, limit = 5 } = req.query;
-    const prescriptions = await Prescription.find()
+    const { page = 1, limit = 5, sort = 'asc', date } = req.query;
+    const filter = {};
+
+    if (date) {
+      const start = new Date(date + 'T00:00:00');
+      const end = new Date(date + 'T23:59:59.999');
+      filter.createdAt = { $gte: start, $lte: end };
+    }
+
+    const prescriptions = await Prescription.find(filter)
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .sort({ createdAt: sort === 'asc' ? 1 : -1 });
+
     res.json(prescriptions);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 exports.getOne = async (req, res) => {
