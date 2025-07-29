@@ -4,8 +4,13 @@ const Medicine = require('../models/Medicine');
 
 exports.getAll = async (req, res) => {
   try {
-    const { page = 1, limit = 5 } = req.query;
-    const medicines = await Medicine.find()
+    const { page = 1, limit = 5, search = '', sort = 'asc', understock } = req.query;
+    const filter = { name: new RegExp(search, 'i') };
+    if (understock) {
+      filter.stock = { $lt: understock };
+    }
+    const medicines = await Medicine.find(filter)
+      .sort({ name: sort === 'asc' ? 1 : -1 })
       .skip((page - 1) * limit)
       .limit(limit);
     res.json(medicines);
