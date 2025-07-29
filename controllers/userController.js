@@ -183,12 +183,10 @@ exports.changePassword = async (req, res) => {
 
 
 
-// get user orders
 exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.params.id;
-    const orders = await Order.find({ user: userId })
-      .populate('items.medicine');
+    const orders = await Order.find({ user: userId });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });
