@@ -3,10 +3,12 @@ const Medicine = require('../models/Medicine');
 const Prescription = require('../models/Prescription');
 
 
-
 exports.getAll = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const { page = 1, limit = 5 } = req.query;
+    const orders = await Order.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });

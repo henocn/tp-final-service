@@ -1,9 +1,9 @@
 const Prescription = require('../models/Prescription');
 
 
-
 exports.getAll = async (req, res) => {
   try {
+    const { page = 1, limit = 5 } = req.query;
     const prescriptions = await Prescription.find()
     res.json(prescriptions);
   } catch (err) {
