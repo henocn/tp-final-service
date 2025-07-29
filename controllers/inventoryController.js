@@ -3,8 +3,15 @@ const Inventory = require('../models/Inventory');
 
 exports.getAll = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
-    const inventory = await Inventory.find()
+    const { page = 1, limit = 5, search = '', sort = 'asc', understock } = req.query;
+    const filter = {};
+    if (search) {
+      filter.name = new RegExp(search, 'i');
+    }
+    if (understock) {
+      filter.stock = { $lt: understock };
+    }
+    const inventory = await Inventory.find(filter)
       .populate('medicine')
       .skip((page - 1) * limit)
       .limit(limit);
