@@ -200,8 +200,7 @@ exports.getUserPrescriptions = async (req, res) => {
   try {
     const userId = req.params.id;
     const prescriptions = await Prescription.find({ patient: userId })
-      .populate('doctor')
-      .populate('medicines.medicine');
+      .populate('doctor', '_id email firstName lastName');
     res.json(prescriptions);
   } catch (err) {
     res.status(500).json({ error: err.message });
