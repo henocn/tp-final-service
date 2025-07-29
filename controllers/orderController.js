@@ -136,23 +136,36 @@ exports.create = async (req, res) => {
 
 
 
-exports.payOrder = async (req, res) => {
+exports.acceptOrCancelOrder = async (req, res) => {
+  const { action } = req.body;
+
+  if (!['pay', 'cancel'].includes(action)) {
+    return res.status(400).json({ error: 'Invalid action' });
+  }
+
   try {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
-    if (order.status !== 'pending') {
-      return res.status(400).json({ error: 'Order cannot be paid' });
+    if (action === 'pay') {
+      if (order.status !== 'pending') {
+        return res.status(400).json({ error: 'Order cannot be paid, it is not in pending status' });
+      }
+      order.status = 'success';
+    } else if (action === 'cancel') {
+      if (order.status !== 'pending') {
+        return res.status(400).json({ error: 'Order cannot be cancelled, it is not in pending status' });
+      }
+      order.status = 'cancelled';
     }
 
-    order.status = 'success';
     await order.save();
-
     res.json(order);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 

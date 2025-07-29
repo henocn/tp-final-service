@@ -1,10 +1,12 @@
 const router = require('express').Router();
-const { getAll, create, getOne, delete: deleteOrder } = require('../controllers/orderController');
+const { getAll, create, getOne, delete: deleteOrder, acceptOrCancelOrder } = require('../controllers/orderController');
 const auth = require('../middleware/auth');
+const checkRole = require('../middleware/checkRole');
 
 router.get('/', auth, getAll);
-router.get('/:id', auth, getOne);
 router.post('/', auth, create);
+router.get('/:id', auth, getOne);
+router.post('/:id/payement', auth, checkRole("pharmacist"), acceptOrCancelOrder);
 router.delete('/:id', auth, deleteOrder);
 
 module.exports = router;
