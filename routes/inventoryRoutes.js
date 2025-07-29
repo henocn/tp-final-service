@@ -1,10 +1,13 @@
 const router = require('express').Router();
-const { getAll, updateStock, checkStock } = require('../controllers/inventoryController');
 const auth = require('../middleware/auth');
 const checkRole = require('../middleware/checkRole');
 
-router.get('/', auth, getAll);
-router.put('/:medicineId/stock', auth, checkRole('pharmacist'), updateStock);
-router.get('/:medicineId/stock', auth, checkStock);
+const { getProductsWithSalesRate, getTotalSalesByProduct, patientsWithPrescriptions, doctorsWithPrescriptions, getSalesInventoryByPeriod } = require('../controllers/inventoryController');
+
+router.get('/sales-rate', auth, checkRole('admin'), getProductsWithSalesRate);
+router.get('/total-sales', auth, checkRole('admin'), getTotalSalesByProduct);
+router.get('/patient/prescriptions', auth, checkRole('admin'), patientsWithPrescriptions);
+router.get('/doctor/prescriptions', auth, checkRole('admin'), doctorsWithPrescriptions);
+router.get('/sales', auth, checkRole('admin'), getSalesInventoryByPeriod);
 
 module.exports = router;

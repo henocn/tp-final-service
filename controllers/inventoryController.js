@@ -1,21 +1,44 @@
-const Inventory = require('../models/Inventory');
+const Order = require('../models/Order');
+const User = require('../models/User')
 
 
-exports.getAll = async (req, res) => {
+/**
+ * LISTE FINALE :
+ *
+ * 1 Lister les produits avec leur taux de vente
+ * 2 Faire l'innventaire de la somme de vente par produit
+ * 3 Lister les clients avec leur nombre de médicaments prescrits
+ * 4 Lister les docteurs avec leur nombre de médicaments prescrits par patient
+ * 5 Inventaire de vente dans une période donnée
+*/
+
+
+// implementation de la fonction 1
+exports.getProductsWithSalesRate = async (req, res) => {
   try {
-    const { page = 1, limit = 5, search = '', sort = 'asc', understock } = req.query;
-    const filter = {};
-    if (search) {
-      filter.name = new RegExp(search, 'i');
-    }
-    if (understock) {
-      filter.stock = { $lt: understock };
-    }
-    const inventory = await Inventory.find(filter)
-      .populate('medicine')
-      .skip((page - 1) * limit)
-      .limit(limit);
-    res.json(inventory);
+    const orders = await Order.find().populate('items.medicine');
+    const medicineSales = {};
+
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        if (!medicineSales[item.medicine._id]) {
+          medicineSales[item.medicine._id] = {
+            name: item.medicine.name,
+            totalSold: 0,
+            totalQuantity: 0
+          };
+        }
+        medicineSales[item.medicine._id].totalSold += item.quantity;
+        medicineSales[item.medicine._id].totalQuantity += item.medicine.stock;
+      });
+    });
+
+    const salesRate = Object.values(medicineSales).map(med => ({
+      name: med.name,
+      salesRate: med.totalSold / med.totalQuantity
+    }));
+
+    res.json(salesRate);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -23,36 +46,114 @@ exports.getAll = async (req, res) => {
 
 
 
-exports.updateStock = async (req, res) => {
+// implementation de la fonction 2
+exports.getTotalSalesByProduct = async (req, res) => {
   try {
-    const { quantity } = req.body;
-    const inventory = await Inventory.findOneAndUpdate(
-      { medicine: req.params.medicineId },
-      { $inc: { quantity } },
-      { new: true }
-    );
-    if (!inventory) return res.status(404).json({ error: 'Inventory not found' });
-    res.json(inventory);
+    const orders = await Order.find().populate('items.medicine');
+    const salesByProduct = {};
+
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        if (!salesByProduct[item.medicine._id]) {
+          salesByProduct[item.medicine._id] = {
+            name: item.medicine.name,
+            totalSales: 0
+          };
+        }
+        salesByProduct[item.medicine._id].totalSales += item.quantity * item.medicine.price;
+      });
+    });
+
+    res.json(Object.values(salesByProduct));
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 
 
 
-exports.checkStock = async (req, res) => {
+
+// implementation de la fonction 3
+exports.patientsWithPrescriptions = async (req, res) => {
   try {
-    const inventory = await Inventory.findOne({ 
-      medicine: req.params.medicineId 
+    const patients = await User.find({ role: 'patient' }).populate({
+      path: 'prescriptions',
+      model: 'Prescription',
+      populate: {
+        path: 'items.medicine',
+        model: 'Medicine'
+      }
     });
-    if (!inventory) return res.status(404).json({ error: 'Inventory not found' });
-    
-    const isLow = inventory.quantity <= inventory.minimumStock;
-    res.json({
-      quantity: inventory.quantity,
-      isLow,
-      minimumStock: inventory.minimumStock
+
+    const patientsWithCounts = patients.map(patient => ({
+      name: patient.name,
+      prescriptionsCount: patient.prescriptions.length
+    }));
+
+    res.json(patientsWithCounts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+
+// implementation de la fonction 4
+exports.doctorsWithPrescriptions = async (req, res) => {
+  try {
+    const doctors = await User.find({ role: 'doctor' }).populate({
+      path: 'prescriptions',
+      model: 'Prescription',
+      populate: {
+        path: 'items.medicine',
+        model: 'Medicine'
+      }
     });
+
+    const doctorsWithCounts = doctors.map(doctor => ({
+      name: doctor.name,
+      prescriptionsCount: doctor.prescriptions.length
+    }));
+
+    res.json(doctorsWithCounts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+
+
+// implementation de la fonction 5
+exports.getSalesInventoryByPeriod = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: 'Start date and end date are required' });
+    }
+
+    const orders = await Order.find({
+      createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) }
+    }).populate('items.medicine');
+
+    const salesInventory = {};
+
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        if (!salesInventory[item.medicine._id]) {
+          salesInventory[item.medicine._id] = {
+            name: item.medicine.name,
+            totalSales: 0
+          };
+        }
+        salesInventory[item.medicine._id].totalSales += item.quantity * item.medicine.price;
+      });
+    });
+
+    res.json(Object.values(salesInventory));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

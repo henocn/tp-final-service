@@ -46,7 +46,7 @@ exports.create = async (req, res) => {
   try {
     const { user, items, prescription: prescriptionId } = req.body;
 
-    if (!user || !Array.isArray(items) || items.length === 0) {
+    if (!user || !Array.isArray(items)) {
       return res.status(400).json({ error: 'User and items are required' });
     }
 
