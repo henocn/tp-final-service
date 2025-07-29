@@ -6,9 +6,7 @@ const Prescription = require('../models/Prescription');
 
 exports.getAll = async (req, res) => {
   try {
-    const orders = await Order.find()
-      .populate('user')
-      .populate('items.medicine');
+    const orders = await Order.find();
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -20,8 +18,8 @@ exports.getAll = async (req, res) => {
 exports.getOne = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .populate('user')
-      .populate('items.medicine');
+      .populate('user', '_id email role')
+      .populate('items.medicine', '_id name');
     if (!order) return res.status(404).json({ error: 'Order not found' });
     res.json(order);
   } catch (err) {
@@ -166,6 +164,7 @@ exports.update = async (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
+};
 
 
 
@@ -177,5 +176,4 @@ exports.delete = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
 };
