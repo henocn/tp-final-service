@@ -1,10 +1,13 @@
 const Inventory = require('../models/Inventory');
 
 
-
 exports.getAll = async (req, res) => {
   try {
-    const inventory = await Inventory.find().populate('medicine');
+    const { page = 1, limit = 10 } = req.query;
+    const inventory = await Inventory.find()
+      .populate('medicine')
+      .skip((page - 1) * limit)
+      .limit(limit);
     res.json(inventory);
   } catch (err) {
     res.status(500).json({ error: err.message });
