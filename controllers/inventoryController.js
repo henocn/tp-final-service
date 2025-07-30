@@ -118,21 +118,35 @@ exports.patientsWithPrescriptions = async (req, res) => {
 // implementation de la fonction 4
 exports.doctorsWithPrescriptions = async (req, res) => {
   try {
-    const doctors = await User.find({ role: 'doctor' }).populate({
-      path: 'prescriptions',
-      model: 'Prescription',
-      populate: {
-        path: 'items.medicine',
-        model: 'Medicine'
+    const results = await Prescription.aggregate([
+      {
+        $group: {
+          _id: '$doctor',
+          prescriptionsCount: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: '70815285_users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'doctor'
+        }
+      },
+      {
+        $unwind: '$doctor'
+      },
+      {
+        $project: {
+          _id: '$doctor._id',
+          email: '$doctor.email',
+          name: { $concat: ['$doctor.firstName', ' ', '$doctor.lastName'] },
+          prescriptionsCount: 1
+        }
       }
-    });
+    ]);
 
-    const doctorsWithCounts = doctors.map(doctor => ({
-      name: doctor.name,
-      prescriptionsCount: doctor.prescriptions.length
-    }));
-
-    res.json(doctorsWithCounts);
+    res.json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -145,14 +159,14 @@ exports.doctorsWithPrescriptions = async (req, res) => {
 // implementation de la fonction 5
 exports.getSalesInventoryByPeriod = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { start, end } = req.query;
 
-    if (!startDate || !endDate) {
+    if (!start || !end) {
       return res.status(400).json({ error: 'Start date and end date are required' });
     }
 
     const orders = await Order.find({
-      createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) }
+      createdAt: { $gte: new Date(start), $lte: new Date(end) }
     }).populate('items.medicine');
 
     const salesInventory = {};
@@ -161,10 +175,14 @@ exports.getSalesInventoryByPeriod = async (req, res) => {
       order.items.forEach(item => {
         if (!salesInventory[item.medicine._id]) {
           salesInventory[item.medicine._id] = {
+            id: item.medicine._id,
             name: item.medicine.name,
+            price: item.medicine.price,
+            quantity: 0,
             totalSales: 0
           };
         }
+        salesInventory[item.medicine._id].quantity += item.quantity;
         salesInventory[item.medicine._id].totalSales += item.quantity * item.medicine.price;
       });
     });
