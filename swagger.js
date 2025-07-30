@@ -53,12 +53,16 @@ const options = {
     ],
     tags: [
       {
-        name: 'Medicines',
-        description: 'Manage pharmacy products'
+        name: 'Auth',
+        description: 'Operations related to user authentication'
       },
       {
         name: 'Users',
         description: 'Operations related to users'
+      },
+      {
+        name: 'Medicines',
+        description: 'Manage pharmacy products'
       },
       {
         name: 'Prescriptions',
