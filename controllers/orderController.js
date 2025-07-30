@@ -6,13 +6,17 @@ const Prescription = require('../models/Prescription');
 
 exports.getAll = async (req, res) => {
   try {
-    const { page = 1, limit = 5, sort = 'asc', date } = req.query;
+    const { page = 1, limit = 5, sort = 'asc', date, status } = req.query;
     const filter = {};
 
     if (date) {
       const start = new Date(date + 'T00:00:00');
       const end = new Date(date + 'T23:59:59.999');
       filter.createdAt = { $gte: start, $lte: end };
+    }
+
+    if (status) {
+      filter.status = status;
     }
 
     const orders = await Order.find(filter)
