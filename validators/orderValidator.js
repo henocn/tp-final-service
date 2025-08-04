@@ -3,37 +3,40 @@ const mongoose = require('mongoose');
 
 
 
+// a validation of order creation function
 exports.validateOrderCreation = [
   body('user')
-    .notEmpty().withMessage('L\'ID utilisateur est requis')
-    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('ID utilisateur invalide'),
+    .notEmpty().withMessage('User ID is required')
+    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('Invalid user ID'),
   body('items')
-    .isArray({ min: 1 }).withMessage('Les items doivent être un tableau non vide'),
+    .isArray({ min: 1 }).withMessage('Items must be a non-empty array'),
   body('items.*.medicine')
-    .notEmpty().withMessage('Chaque item doit contenir un ID de médicament')
-    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('ID de médicament invalide'),
+    .notEmpty().withMessage('Each item must contain a medicine ID')
+    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('Invalid medicine ID'),
   body('items.*.quantity')
-    .isInt({ min: 1 }).withMessage('La quantité doit être au moins de 1'),
+    .isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
   body('prescription')
     .optional()
-    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('ID de prescription invalide'),
+    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('Invalid prescription ID'),
 ];
 
 
 
+
+// a validation of order update function
 exports.validateOrderUpdate = [
   param('id')
-    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('ID de commande invalide'),
+    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('Invalid order ID'),
   body('status')
     .optional()
-    .isIn(['pending', 'success', 'cancelled']).withMessage('Le statut doit être pending, success ou cancelled'),
+    .isIn(['pending', 'success', 'cancelled']).withMessage('Status must be pending, success, or cancelled'),
   body('items')
     .optional()
-    .isArray().withMessage('Les items doivent être un tableau'),
+    .isArray().withMessage('Items must be an array'),
   body('items.*.medicine')
     .optional()
-    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('ID de médicament invalide'),
+    .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('Invalid medicine ID'),
   body('items.*.quantity')
     .optional()
-    .isInt({ min: 1 }).withMessage('La quantité doit être au moins de 1'),
+    .isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
 ];
