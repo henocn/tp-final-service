@@ -43,24 +43,25 @@ exports.createMedicineValidator = [
 
 
 exports.bulkCreateMedicineValidator = [
-  body('medicines')
+  body()
     .isArray({ min: 1 }).withMessage('La liste des médicaments est obligatoire.')
     .bail()
     .custom((arr) => arr.every(item => typeof item === 'object' && item !== null))
     .withMessage('Chaque médicament doit être un objet.'),
-  
-  body('medicines.*.name')
+
+  body('*.name')
     .notEmpty().withMessage('Le nom du médicament est requis.')
     .isLength({ min: 2 }).withMessage('Le nom doit contenir au moins 2 caractères.'),
 
-  body('medicines.*.price')
+  body('*.price')
     .notEmpty().withMessage('Le prix est requis.')
     .isFloat({ gt: 0 }).withMessage('Le prix doit être un nombre positif.'),
 
-  body('medicines.*.stock')
+  body('*.stock')
     .notEmpty().withMessage('Le stock est requis.')
-    .isInt({ min: 0 }).withMessage('Le stock doit être un entier positif ou nul.')
+    .isInt({ min: 0 }).withMessage('Le stock doit être un entier positif ou nul.'),
 ];
+
 
 
 
