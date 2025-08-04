@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const { getAll, getOne, create, bulkCreate, update, patch: patchMedicine, delete: deleteMedicine } = require('../controllers/medicineController');
 const auth = require('../middleware/auth');
+const { medicineValidator } = require('../validators/medicineValidator');
 
 router.get('/', getAll);
 router.get('/:id', getOne);
