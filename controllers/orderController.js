@@ -50,10 +50,6 @@ exports.create = async (req, res) => {
   try {
     const { user, items, prescription: prescriptionId } = req.body;
 
-    if (!user || !Array.isArray(items)) {
-      return res.status(400).json({ error: 'User and items are required' });
-    }
-
     const medicineIds = items.map(i => i.medicine);
     const medicines = await Medicine.find({ _id: { $in: medicineIds } });
 
