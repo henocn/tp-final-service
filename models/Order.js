@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+
+// Model de commande des utilisateurs
 const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
