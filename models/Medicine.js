@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+
+// Modèle des médicaments 
 const medicineSchema = new mongoose.Schema({
   name: {
     type: String,
