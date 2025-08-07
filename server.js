@@ -5,10 +5,10 @@ const connectDB = require('./config/database');
 const routes = require('./routes');
 const { swaggerUi, specs } = require('./swagger');
 
-
+// creation of the root app
 const app = express();
 
-// Middleware
+// Middleware cors
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
