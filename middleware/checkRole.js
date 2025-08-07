@@ -1,3 +1,6 @@
+
+
+// Middleware pour vérifier le role d'un utilisateur faisant une requete 
 module.exports = (roleRequired) => {
   return (req, res, next) => {
     if (!req.user) {
