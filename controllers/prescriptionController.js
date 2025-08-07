@@ -1,6 +1,9 @@
 const Prescription = require('../models/Prescription');
 
 
+
+// fonction pour récuperer toutes les prescriptions existantes dans la base de donnée
+// ajout du filtrage et du classement par ordre de date
 exports.getAll = async (req, res) => {
   try {
     const { page = 1, limit = 5, sort = 'asc', date } = req.query;
@@ -25,6 +28,7 @@ exports.getAll = async (req, res) => {
 
 
 
+// récupétation des details d'une prescription
 exports.getOne = async (req, res) => {
   try {
     const prescription = await Prescription.findById(req.params.id)
@@ -48,6 +52,8 @@ exports.getOne = async (req, res) => {
 };
 
 
+
+// creation d'une precription ou prescrire un médicament
 exports.create = async (req, res) => {
   try {
     const prescription = await Prescription.create({
@@ -62,6 +68,7 @@ exports.create = async (req, res) => {
 
 
 
+// mise a jour d'une prescription en changeant la liste des produits commandé ou la quantité
 exports.update = async (req, res) => {
   try {
     const prescription = await Prescription.findByIdAndUpdate(
@@ -79,7 +86,7 @@ exports.update = async (req, res) => {
 
 
 
-
+// supprimer une prescription de la base de donnée
 exports.delete = async (req, res) => {
   try {
     const prescription = await Prescription.findByIdAndDelete(req.params.id);
