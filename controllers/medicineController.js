@@ -2,6 +2,8 @@ const Medicine = require('../models/Medicine');
 
 
 
+// Récupération de tous les produit dans la base de donnée avec pagination
+// filtrage et recherche et classement par ordre alphabetique
 exports.getAll = async (req, res) => {
   try {
     const { page = 1, limit = 5, search = '', sort = 'asc', understock } = req.query;
@@ -21,6 +23,7 @@ exports.getAll = async (req, res) => {
 
 
 
+// details d'un produit (médicament) unique
 exports.getOne = async (req, res) => {
   try {
     const medicine = await Medicine.findById(req.params.id);
@@ -33,6 +36,7 @@ exports.getOne = async (req, res) => {
 
 
 
+// création d'un produit (médicament)
 exports.create = async (req, res) => {
   try {
     const medicine = await Medicine.create(req.body);
@@ -43,6 +47,8 @@ exports.create = async (req, res) => {
 };
 
 
+
+// Création en masse des médicament récuperés depuis une liste
 exports.bulkCreate = async (req, res) => {
   try {
     const medicines = await Medicine.insertMany(req.body);
@@ -54,6 +60,7 @@ exports.bulkCreate = async (req, res) => {
 
 
 
+// Mise a joute total des médicaments
 exports.update = async (req, res) => {
   try {
     const medicine = await Medicine.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -65,6 +72,8 @@ exports.update = async (req, res) => {
 };
 
 
+
+// Mise à jour partielle des médicaments
 exports.patch = async (req, res) => {
   try {
     const medicine = await Medicine.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -77,6 +86,7 @@ exports.patch = async (req, res) => {
 
 
 
+// Suppression d'un médicament de la base de donnée
 exports.delete = async (req, res) => {
   try {
     const medicine = await Medicine.findByIdAndDelete(req.params.id);
