@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+
+
+// Function de middleware qui a pour role de vérifier si l'utilisateur qui fait la requete est bien connecté (authentifié)
 module.exports = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
