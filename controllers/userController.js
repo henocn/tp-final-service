@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 
 
+// regristration des utilisateurs en reseignant le role
 exports.register = async (req, res) => {
   try {
     const { email, password, ...rest } = req.body;
@@ -33,6 +34,7 @@ exports.register = async (req, res) => {
 
 
 
+// login des utilisateur et génération des tokken de refresh et access
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -74,6 +76,7 @@ exports.login = async (req, res) => {
 
 
 
+// refresh tokken
 exports.refreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -200,6 +203,7 @@ exports.changePassword = async (req, res) => {
 
 
 
+// récuperation des commandes passée par un certain utisateur
 exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -211,6 +215,8 @@ exports.getUserOrders = async (req, res) => {
 };
 
 
+
+// voir la liste des precriprion qu'un certain utilisateurs a reçu d'un médecin
 exports.getUserPrescriptions = async (req, res) => {
   try {
     const userId = req.params.id;
