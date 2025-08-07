@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+
+
+// Model des prescriptions
 const prescriptionSchema = new mongoose.Schema({
   patient: {
     type: mongoose.Schema.Types.ObjectId,
