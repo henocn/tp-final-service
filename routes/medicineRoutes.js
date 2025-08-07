@@ -6,6 +6,7 @@ const { createMedicineValidator, bulkCreateMedicineValidator, updateMedicineVali
 const validate = require('../middleware/validate');
 
 
+// définition des routes et leur protection avec des middleware de vérification d'authentifiaction et de role
 router.get('/', getAll);
 router.get('/:id', getOne);
 router.post('/', auth, createMedicineValidator, validate, create);

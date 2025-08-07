@@ -7,6 +7,7 @@ const {validateOrderCreation, validateOrderUpdate} = require('../validators/orde
 const validate = require('../middleware/validate')
 
 
+// définition des routes et leur protection avec des middleware de vérification d'authentifiaction et de role
 router.get('/', auth, getAll);
 router.post('/', auth, validateOrderCreation, validate, create);
 router.get('/:id', auth, getOne);

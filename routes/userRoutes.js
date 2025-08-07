@@ -7,6 +7,7 @@ const { validateUserRegistration, validateUserLogin, validateUserUpdate } = requ
 const validate = require('../middleware/validate');
 
 
+// fonction qui permet de limiter le nombre de requêtes de connexion
 const loginLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 5,
@@ -16,6 +17,7 @@ const loginLimiter = rateLimit({
 });
 
 
+// définition des routes et leur protection avec des middleware de vérification d'authentifiaction et de role
 router.get('/', auth, getAllUsers);
 router.get('/:id', auth, getUserById);
 router.delete('/:id', auth, deleteUser);
