@@ -1,5 +1,8 @@
 const { validationResult } = require("express-validator");
 
+
+
+// Middleware de validation des champ, ce qui permet de vérifier et de controller le contenudes requete
 module.exports = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
