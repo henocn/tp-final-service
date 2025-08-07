@@ -2,7 +2,7 @@ const { body, param } = require('express-validator');
 const mongoose = require('mongoose');
 
 
-
+// validationdu body de requete lors de la registration
 exports.validateUserRegistration = [
   body('username')
     .trim()
@@ -20,6 +20,7 @@ exports.validateUserRegistration = [
 
 
 
+// Sanitization de body request lors du login
 exports.validateUserLogin = [
   body('email')
     .normalizeEmail()
@@ -30,6 +31,7 @@ exports.validateUserLogin = [
 
 
 
+// vérification des information de la requete lors de la mise à jour d'un utilisateur
 exports.validateUserUpdate = [
   param('id')
     .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('ID utilisateur invalide'),

@@ -1,6 +1,4 @@
 const { body } = require('express-validator');
-// change all text into english and add a one line comment before each export
-
 
 
 // Function to validate the creation of a medicine

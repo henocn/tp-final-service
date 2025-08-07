@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 
 
+// Validation des prescriptions lors de leur création
 exports.validatePrescriptionCreation = [
   body('user')
     .notEmpty().withMessage('L\'ID de l\'utilisateur est requis')
@@ -21,6 +22,8 @@ exports.validatePrescriptionCreation = [
 
 
 
+
+// validation de la requete lors du update
 exports.validatePrescriptionUpdate = [
   param('id')
     .custom(value => mongoose.Types.ObjectId.isValid(value)).withMessage('ID de prescription invalide'),
