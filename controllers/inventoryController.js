@@ -3,18 +3,8 @@ const User = require('../models/User')
 const Prescription = require('../models/Prescription');
 
 
-/**
- * LISTE FINALE :
- *
- * 1 Lister les produits avec leur taux de vente
- * 2 Faire l'innventaire de la somme de vente par produit
- * 3 Lister les clients avec leur nombre de médicaments prescrits
- * 4 Lister les docteurs avec leur nombre de médicaments prescrits par patient
- * 5 Inventaire de vente dans une période donnée
-*/
 
-
-// implementation de la fonction 1
+// Récupération des taux de ventes pour tous les produits 
 exports.getProductsWithSalesRate = async (req, res) => {
   try {
     const orders = await Order.find().populate('items.medicine');
@@ -47,7 +37,8 @@ exports.getProductsWithSalesRate = async (req, res) => {
 
 
 
-// implementation de la fonction 2
+// Function pour récuperer tous les produits (médicaments) dans les commendes
+// ceci afin de savoir quel produit est le plus vendus ou a le plus de ventes
 exports.getTotalSalesByProduct = async (req, res) => {
   try {
     const orders = await Order.find().populate('items.medicine');
@@ -74,7 +65,7 @@ exports.getTotalSalesByProduct = async (req, res) => {
 
 
 
-// implementation de la fonction 3
+// récupération de toutes prescriptions d'un certain patient donné
 exports.patientsWithPrescriptions = async (req, res) => {
   try {
     const results = await Prescription.aggregate([
@@ -114,8 +105,7 @@ exports.patientsWithPrescriptions = async (req, res) => {
 
 
 
-
-// implementation de la fonction 4
+// Récupération des prescriptions d'un certain medecin
 exports.doctorsWithPrescriptions = async (req, res) => {
   try {
     const results = await Prescription.aggregate([
@@ -156,7 +146,7 @@ exports.doctorsWithPrescriptions = async (req, res) => {
 
 
 
-// implementation de la fonction 5
+// Récupération des des statistiques de ventes dans une certaines période 
 exports.getSalesInventoryByPeriod = async (req, res) => {
   try {
     const { start, end } = req.query;
