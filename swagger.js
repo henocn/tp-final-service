@@ -22,7 +22,7 @@ const options = {
         description: 'Local server'
       },
       {
-        url: `https://render/henocngasama/phar-manager`,
+        url: `https://henoc-service.onrender.com`,
         description: 'Render server'
       }
     ],
