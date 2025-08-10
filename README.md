@@ -32,7 +32,7 @@ Le système implémente une hiérarchie de rôles sophistiquée :
 ### Sécurité JWT
 - **Access Token** : Valide 15 minutes pour les opérations courantes
 - **Refresh Token** : Valide 30 jours pour renouveler l'access token
-- **Hachage des mots de passe** avec bcryptjs (salt rounds: 10)
+- **Hachage des mots de passe** avec bcryptjs (salt rounds: 10).
 
 ## Modèles de Données
 
